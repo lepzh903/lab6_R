@@ -1,0 +1,14 @@
+Package: lab6package
+Type: Package
+Title: Solving Knapsack Problem
+Version: 0.1.0
+Date: 2023-10-12
+Author: c(
+    person("Lepeng", "Zhang", email = "lepzh903@student.liu.se", role = "cre"),
+    person("William", "Wijgård", email = "wilwi220@student.liu.se", role = "aut"))
+Maintainer: William Wijgård <wilwi220@student.liu.se>
+Description: The package contains three different functions for solving what is called the knapsack problem. Brute force search, Dynamic programming, and Greedy heuristic.
+License: GPL
+Depends: 
+    R (>= 2.10)
+LazyData: true
