@@ -12,3 +12,6 @@ License: GPL
 Depends: 
     R (>= 2.10)
 LazyData: true
+RoxygenNote: 7.2.3
+Encoding: UTF-8
+
