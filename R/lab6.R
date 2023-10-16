@@ -94,5 +94,44 @@ knapsack_dynamic <-  function(x, W){
 #Answer: By running: system.time(knapsack_dynamic(x = knapsack_objects[1:500,], W = 3500)), the elapsed time is 4.17s.
 
 
+#' @title Solve the knapsack problem by Greedy heuristic
+#' 
+#' @description
+#' This function solves the knapsack problem by Greedy heuristic.
+#' 
+#' @param x A data frame with two variables (w, v) that contains the weight (w) and value (v) of each item.
+#' @param W The knapsack capacity.
+#' @returns A list contains the maximum knapsack value and which elements involved (rows in the data.frame x).
+#' @examples
+#' greedy_knapsack(x = knapsack_objects[1:800,], W = 3500)
+#' @export greedy_knapsack
+
+greedy_knapsack <-  function(x, W){
+  stopifnot(is.data.frame(x), is.numeric(W))
+  stopifnot(names(x) == c('w','v'), all(x > 0) && W>0)
+  finallist <- list(value=0, elements=NULL)
+  
+  v_per_w <- x$v/x$w
+  sort_items <- order(-v_per_w)
+  totalvalue <- 0
+  totalweight <- 0
+  pick_item <- c()
+  
+  for (i in sort_items){
+    if (totalweight+x$w[i] <= W){
+      pick_item <- c(pick_item,i)
+      totalvalue <- totalvalue+x$v[i]
+      totalweight <- totalweight+x$w[i]
+    }
+  }
+  finallist$value <- round(totalvalue)
+  finallist$elements <- pick_item
+  return(finallist)
+}
+
+#Question: How much time does it takes to run the algorithm for n = 1000000 objects?
+#Answer: By running: system.time(greedy_knapsack(x = knapsack_objects[1:1000000,], W = 3500)
+#), the elapsed time is 0.67s.
+
 
 
