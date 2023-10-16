@@ -26,4 +26,25 @@ system.time(brute_force_knapsack(x = knapsack_objects[1:16,], W = 3500))
 ```{r}
 system.time(knapsack_dynamic(x = knapsack_objects[1:500,], W = 3500))
 ```
+## Greedy heuristic
+```{r}
+RNGversion(min(as.character(getRversion()),"3.5.3"))
+set.seed(42, kind = "Mersenne-Twister", normal.kind = "Inversion")
+n <- 1000000
+knapsack_objects_2 <- data.frame(
+                      w=sample(1:4000, size = n, replace = TRUE),
+                      v=runif(n = n, 0, 10000)
+                      )
+
+system.time(greedy_knapsack(x = knapsack_objects_2[1:1000000,], W = 3500))
+```
+## Profile and optimize the code
+In *Brute force search* function, we used two for-loops to enumerate all the potential combinations and to extract from the original data frame at the very beginning. Then we found that it costs too much time so decided to change to use **intToBits()**. Thus, a lot of time saved.
+
+## Implentation in Rcpp
+When we use **profvis** to examine *Brute force search* function, we found the most time-consuming part is the for-loop that goes through all the combinations. So we created a cpp function to replace it if argument *fast* sets as TRUE. The speed boost is obvious.
+```{r}
+system.time(brute_force_knapsack(x = knapsack_objects[1:20,], W = 3500))
+system.time(brute_force_knapsack(x = knapsack_objects[1:20,], W = 3500, fast = TRUE))
+```
 
