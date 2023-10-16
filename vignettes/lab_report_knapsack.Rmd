@@ -1,0 +1,29 @@
+---
+title: "lab_report_knapsack"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{lab_report_knapsack}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+```
+## Import
+```{r setup}
+library(lab6package)
+```
+
+## Brute force search
+```{r}
+system.time(brute_force_knapsack(x = knapsack_objects[1:16,], W = 3500))
+```
+## Dynamic programming
+```{r}
+system.time(knapsack_dynamic(x = knapsack_objects[1:500,], W = 3500))
+```
+

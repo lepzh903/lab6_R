@@ -1,6 +1,6 @@
-
-
-
+#' @import Rcpp
+#' @useDynLib lab6package
+#' @importFrom Rcpp sourceCpp
 
 #' @title Solve the knapsack problem by Brute force search
 #' 
@@ -9,30 +9,30 @@
 #' 
 #' @param x A data frame with two variables (w, v) that contains the weight (w) and value (v) of each item.
 #' @param W The knapsack capacity.
-#' 
+#' @param fast Logical, indicating whether to use the fast C++ implementation.
 #' @returns A list contains the maximum knapsack value and which elements involved (rows in the data.frame x).
 #' @export brute_force_knapsack
 
-brute_force_knapsack <-  function(x, W){
+brute_force_knapsack <-  function(x, W, fast = FALSE){
   stopifnot(is.data.frame(x), is.numeric(W))
   stopifnot(names(x) == c('w','v'), all(x > 0) && W>0)
-  finallist <- list(value=0, elements=NULL)
-  for (i in 1:2^nrow(x)-1){
-    cbtindex <- intToBits(i)
-    cbtdf <- x[cbtindex==1,]
-    totalvalue <- sum(cbtdf$v)
-    totalweight <- sum(cbtdf$w)
-    if (totalweight <= W && totalvalue > finallist$value){
-      finallist$value <- round(totalvalue)
-      finallist$elements <- as.numeric(rownames(cbtdf))
+  if (fast) {
+    knapsack_cpp(x, W)
+  } else {
+    finallist <- list(value=0, elements=NULL)
+    for (i in 1:2^nrow(x)-1){
+      cbtindex <- intToBits(i)
+      cbtdf <- x[cbtindex==1,]
+      totalvalue <- sum(cbtdf$v)
+      totalweight <- sum(cbtdf$w)
+      if (totalweight <= W && totalvalue > finallist$value){
+        finallist$value <- round(totalvalue)
+        finallist$elements <- as.numeric(rownames(cbtdf))
+      }
     }
+    return(finallist)
   }
-  return(finallist)
 }
-
-#Question: How much time does it takes to run the algorithm for n = 16 objects?
-#Answer: By running: system.time(brute_force_knapsack(x = knapsack_objects[1:16,], W = 3500)), the elapsed time is 1.75s.
-
 
 #' @title Solve the knapsack problem by Dynamic programming
 #' 
@@ -122,11 +122,12 @@ greedy_knapsack <-  function(x, W){
       pick_item <- c(pick_item,i)
       totalvalue <- totalvalue+x$v[i]
       totalweight <- totalweight+x$w[i]
+    }else{
+    finallist$value <- round(totalvalue)
+    finallist$elements <- pick_item
+    return(finallist)
     }
   }
-  finallist$value <- round(totalvalue)
-  finallist$elements <- pick_item
-  return(finallist)
 }
 
 #Question: How much time does it takes to run the algorithm for n = 1000000 objects?
